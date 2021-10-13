@@ -21,8 +21,8 @@ class Search
         }, $url);
 
         $new_test = array();
-        $lat =  1.28210155945393;
-        $long = 103.81722480263163;
+        $lat = -33.989177;
+        $long = 25.654121;
         foreach ($newArray as $item) {
             if ($this->distance($lat, $long, $item['Latitude'], $item['Longitude']) <= 0.1) {
                 array_push($new_test, $item);
