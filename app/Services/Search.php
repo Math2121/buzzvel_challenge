@@ -14,15 +14,15 @@ class Search
         $newArray = array_map(function ($item) {
             return array(
                 'Hotel' => $item[0],
-                'Latitude' => floatval($item[1]),
-                'Longitude' => floatval($item[2]),
+                'Latitude' => (float) $item[1],
+                'Longitude' => (float) $item[2],
                 'Price' => number_format($item[3], 2),
             );
         }, $url);
 
         $new_test = array();
-        $lat = -33.989177;
-        $long = 25.654121;
+        $lat = -29.131573;
+        $long = 26.208987;
         foreach ($newArray as $item) {
             if ($this->distance($lat, $long, $item['Latitude'], $item['Longitude']) <= 0.1) {
                 array_push($new_test, $item);
