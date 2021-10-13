@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 class Search
 {
 
-    public function getNearbyHotels()
+    public function getNearbyHotels($latitude, $longitude, $orderby = 0)
     {
         $url = Http::get('https://buzzvel-interviews.s3.eu-west-1.amazonaws.com/hotels.json')->json()['message'];
 
@@ -16,22 +16,31 @@ class Search
                 'Hotel' => $item[0],
                 'Latitude' => (float) $item[1],
                 'Longitude' => (float) $item[2],
-                'Price' => number_format($item[3], 2),
+                'Price' => (float) number_format($item[3], 2),
             );
         }, $url);
-
-        $new_test = array();
-        $lat = -29.131573;
-        $long = 26.208987;
-        foreach ($newArray as $item) {
-            if ($this->distance($lat, $long, $item['Latitude'], $item['Longitude']) <= 0.1) {
-                array_push($new_test, $item);
+        $result = array();
+ 
+        if ($orderby > 1) {
+            foreach ($newArray as $item) {
+                if ($this->distance($latitude, $longitude, $item['Latitude'], $item['Longitude']) <= 1.0 && $orderby <= $item['Price']) {
+                    $result['hotels'] = $item;
+                    $result['miles'] = $this->distance($latitude, $longitude, $item['Latitude'], $item['Longitude']);
+                    return $result;
+                }
+            }
+        } else {
+            foreach ($newArray as $item) {
+                if ($this->distance($latitude, $longitude, $item['Latitude'], $item['Longitude']) <= 1.0) {
+                    $result['hotels'] = $item;
+                    $result['miles'] = $this->distance($latitude, $longitude, $item['Latitude'], $item['Longitude']);
+                    return $result;
+                }
             }
         }
-        return $new_test;
     }
 
-    public function distance($lat1, $lon1, $lat2, $lon2)
+    private function distance($lat1, $lon1, $lat2, $lon2)
     {
         if (($lat1 == $lat2) && ($lon1 == $lon2)) {
             return 0;

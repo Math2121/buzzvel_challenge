@@ -9,14 +9,18 @@ use Illuminate\Support\Facades\Http;
 class HomeController extends Controller
 {
     //
-    public function index()
-    {
-        return view('index');
-    }
 
-    public function getData()
+
+    public function getData(Request $request)
     {
-        $url  = new Search();
-        dd($url->getNearbyHotels());
+
+        try {
+            $result = new Search();
+            $res = $result->getNearbyHotels($request->latitude, $request->longitude, $request->orderBy);
+
+            return response()->json([$res['hotels']['Hotel'], $res['miles'] . ' Km', $res['hotels']['Price'] . ' EUR'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['Erro na requisição'], 404);
+        }
     }
 }
