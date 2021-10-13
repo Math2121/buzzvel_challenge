@@ -16,11 +16,7 @@ class HomeController extends Controller
 
     public function getData()
     {
-         $url  = new Search();
-         dd($url->getNearbyHotels());
-
-     
-
-      
+        $url  = new Search();
+        dd($url->getNearbyHotels());
     }
 }
